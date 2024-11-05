@@ -15,7 +15,6 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
         const connectionString = configService.get<string>('DATABASE_URL');
         const pool = new Pool({
           connectionString,
-          ssl: true,
         });
 
         return drizzle(pool, { schema }) as NodePgDatabase<typeof schema>;

@@ -1,9 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-enum Location {
-  WEST_MALAYSIA = 'west-malaysia',
-  EAST_MALAYSIA = 'east-malaysia',
-}
+import { ProductLocation } from 'src/common/enums/product-location.enum';
 
 export class Product {
   @ApiProperty({ example: 1, description: 'Product ID' })
@@ -19,8 +15,8 @@ export class Product {
   price: number;
 
   @ApiProperty({
-    example: Location.WEST_MALAYSIA,
+    example: ProductLocation.WEST_MALAYSIA,
     description: 'Location can be either West Malaysia or East Malaysia',
   })
-  location: Location;
+  location: ProductLocation;
 }

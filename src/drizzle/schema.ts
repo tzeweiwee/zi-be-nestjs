@@ -17,5 +17,7 @@ export const products = pgTable('PRODUCT', {
   productCode: integer('product_code').notNull(),
   description: text('description'),
   location: locationEnums().default('west-malaysia'),
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+  price: numeric('price', { precision: 10, scale: 2 })
+    .$type<number>()
+    .notNull(),
 });
