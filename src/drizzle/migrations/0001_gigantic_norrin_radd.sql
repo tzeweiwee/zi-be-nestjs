@@ -1,0 +1,1 @@
+ALTER TABLE "PRODUCT" ADD COLUMN "product_code" integer NOT NULL;
