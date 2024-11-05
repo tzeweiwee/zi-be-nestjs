@@ -102,6 +102,7 @@ export class ProductsController {
         data: data as Product[],
       };
     } catch (error) {
+      console.error(error);
       throw new HttpException(
         {
           status: 'error',
@@ -114,6 +115,7 @@ export class ProductsController {
   }
 
   @Put()
+  @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @ApiBody({ type: UpdateProductDto })
   @ApiResponse({
@@ -170,6 +172,7 @@ export class ProductsController {
   }
 
   @Delete(':productCode')
+  @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Delete products based on product code',
