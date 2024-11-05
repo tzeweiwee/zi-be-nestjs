@@ -12,8 +12,15 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { RolesGuard } from 'src/auth/roles.guard';
 import { CommonResponse } from 'src/common/dto/common-response.dto';
 import { GetProductsDto } from 'src/products/dto/get-products.dto';
 import { Product } from 'src/products/entities/product.entity';
@@ -21,15 +28,25 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
-@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Create a new product',
   })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully created new product',
+    type: [Product],
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Product of same location and product code already exists',
+  })
+  @ApiBearerAuth()
   async create(
     @Body() createProductDto: CreateProductDto,
   ): Promise<CommonResponse<Product[]>> {
@@ -97,11 +114,16 @@ export class ProductsController {
   }
 
   @Put()
+  @UseGuards(RolesGuard)
   @ApiBody({ type: UpdateProductDto })
   @ApiResponse({
     status: 200,
     description: 'Update product price based on product code and location',
     type: [Product],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found',
   })
   @ApiOperation({
     summary: 'Update product price based on product code and location',
@@ -147,10 +169,19 @@ export class ProductsController {
     }
   }
 
+  @Delete(':productCode')
+  @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Delete products based on product code',
   })
-  @Delete(':productCode')
+  @ApiResponse({
+    status: 200,
+    description: 'X Products(s) removed successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found',
+  })
   async remove(
     @Param('productCode', ParseIntPipe) productCode: number,
   ): Promise<CommonResponse<void>> {
